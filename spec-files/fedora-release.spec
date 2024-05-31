@@ -84,6 +84,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed May 29 2024 Model Citizen <model.citizen@ps3linux.net> - 12-3
+* Fri May 31 2024 Model Citizen <model.citizen@ps3linux.net> - 12-3
 - Initial build for Sackboy Linux on Playstation 3 (Cell/B.E.)
 

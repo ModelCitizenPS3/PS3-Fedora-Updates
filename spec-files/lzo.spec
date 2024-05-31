@@ -7,6 +7,7 @@ License:        GPLv2+
 URL:            http://www.oberhumer.com/opensource/%{name}/
 Source0:        http://www.oberhumer.com/opensource/%{name}/download/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Obsoletes:      %{name} < %{version}
 BuildRequires:  zlib-devel
 ExclusiveArch:  ppc ppc64
 
@@ -16,6 +17,7 @@ LZO is a portable lossless data compression library written in ANSI C. It offers
 %package minilzo
 Summary:    Mini version of lzo for apps that do not need the full version
 Group:      System Environment/Libraries
+Obsoletes:  %{name}-minilzo < %{version}
 
 %description minilzo
 A small (mini) version of lzo for embedding into applications which do not need full blown lzo compression support.
@@ -108,6 +110,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue May 28 2024 Model Citizen <model.citizen@ps3linux.net> - 2.10-1
+* Fri May 31 2024 Model Citizen <model.citizen@ps3linux.net> - 2.10-1
 - Initial build for Sackboy Linux on Playstation 3 (Cell/B.E.)
 

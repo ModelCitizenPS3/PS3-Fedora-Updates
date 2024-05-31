@@ -3,10 +3,11 @@ Version:        1.2.13
 Release:        1%{?dist}%{?platform}
 Summary:        The zlib compression and decompression library
 Group:          System Environment/Libraries
-License:        zlib
-URL:            https://%{name}.net/
 Source0:        http://www.%{name}.net/fossils/%{name}-%{version}.tar.gz
+URL:            http://www.%{name}.net/
+License:        %{name}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Provides:       %{name} = 1.2.3
 BuildRequires:  automake, autoconf, libtool
 ExclusiveArch:  ppc ppc64
 
@@ -41,7 +42,7 @@ Minizip manipulates files from a .zip archive.
 Summary:    Development files for the minizip library
 Group:      Development/Libraries
 Requires:   minizip = %{version}-%{release}
-Requires:   zlib-devel = %{version}-%{release}
+Requires:   %{name}-devel = %{version}-%{release}
 Requires:   pkgconfig
 
 %description -n minizip-devel
@@ -53,39 +54,41 @@ This package contains the libraries and header files needed for developing appli
 
 
 %build
-CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple"
-CXXFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple"
-FFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple -I/usr/lib/gfortran/modules"
-export CFLAGS CXXFLAGS FFLAGS
-%ifarch ppc64
-./configure --const --64 --prefix=/usr --libdir=%{_libdir} --sharedlibdir=%{_libdir} --includedir=%{_includedir}
+export CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple"
+%ifarch ppc
+CC="gcc -m32" ./configure --const --prefix=%{_prefix} --libdir=%{_libdir} --sharedlibdir=%{_libdir} --includedir=%{_includedir}
 %else
-./configure --const --prefix=/usr --libdir=%{_libdir} --sharedlibdir=%{_libdir} --includedir=%{_includedir}
+CC="gcc -m64" ./configure --const --64 --prefix=%{_prefix} --libdir=%{_libdir} --sharedlibdir=%{_libdir} --includedir=%{_includedir}
 %endif
 make %{?_smp_mflags}
-pushd $(pwd)
 cd contrib/minizip
 autoreconf --install
-%configure
+%ifarch ppc
+%configure --enable-shared=yes --enable-static=no CC="gcc -m32"
+%else
+%configure --enable-shared=yes --enable-static=no CC="gcc -m64"
+%endif
 make %{?_smp_mflags}
-popd
-
-
-%install
-rm -rf $RPM_BUILD_ROOT
-pushd $(pwd)
-cd contrib/minizip
-make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
-popd
-make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.la
-mkdir $RPM_BUILD_ROOT/%{_lib}
-ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1
-ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.3
 
 
 %check
 make check
+
+
+%install
+rm -rf ${RPM_BUILD_ROOT}
+cd contrib/minizip
+make install DESTDIR=$RPM_BUILD_ROOT
+cd ../../
+make install DESTDIR=$RPM_BUILD_ROOT
+rm -f %{buildroot}%{_libdir}/libminizip.la
+mkdir %{buildroot}/%{_lib}
+ln -s ..%{_libdir}/libz.so.1.2.13 %{buildroot}/%{_lib}/libz.so.1
+ln -s ..%{_libdir}/libz.so.1.2.13 %{buildroot}/%{_lib}/libz.so.1.2.3
+
+
+%clean
+rm -rf ${RPM_BUILD_ROOT}
 
 
 %post -p /sbin/ldconfig
@@ -97,24 +100,20 @@ make check
 %postun -n minizip -p /sbin/ldconfig
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
 %defattr(-,root,root,-)
 %doc README ChangeLog FAQ
-%{_libdir}/libz.so.1
-%{_libdir}/libz.so.1.2.13
 /%{_lib}/libz.so.1
 /%{_lib}/libz.so.1.2.3
+%{_libdir}/libz.so.1
+%{_libdir}/libz.so.1.2.13
 
 %files devel
 %defattr(-,root,root,-)
-%doc README doc/algorithm.txt doc/rfc1950.txt doc/rfc1951.txt doc/rfc1952.txt doc/txtvsbin.txt
+%doc README
+%{_libdir}/libz.so
 %{_includedir}/zconf.h
 %{_includedir}/zlib.h
-%{_libdir}/libz.so
 %{_libdir}/pkgconfig/zlib.pc
 %{_mandir}/man3/zlib.3.*
 
@@ -122,11 +121,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README
 %{_libdir}/libz.a
-%{_libdir}/libminizip.a
 
 %files -n minizip
 %defattr(-,root,root,-)
-%doc contrib/minizip/MiniZip64_info.txt contrib/minizip/MiniZip64_Changes.txt
 %{_libdir}/libminizip.so.1
 %{_libdir}/libminizip.so.1.0.0
 
@@ -138,11 +135,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/minizip/mztools.h
 %{_includedir}/minizip/unzip.h
 %{_includedir}/minizip/zip.h
-%{_libdir}/libminizip.so
 %{_libdir}/pkgconfig/minizip.pc
-
+%{_libdir}/libminizip.so
 
 %changelog
-* Tue May 28 2024 Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
+* Fri May 31 2024 Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
 - Initial build for Sackboy Linux on Playstation 3 (Cell/B.E.)
 
