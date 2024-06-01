@@ -9,7 +9,7 @@ Source0:        http://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  texinfo
 Requires:       mktemp, less, /sbin/install-info
-ExclusiveArch:  ppc ppc64
+ExclusiveArch:  ppc
 
 %description
 The gzip package contains the popular GNU gzip data compression program. Gzipped files have a .gz extension. Gzip should be installed on your system, because it is a very commonly used data compression program.
@@ -36,7 +36,8 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
-rm -f %{buildroot}%{_infodir}/dir
+rm -f $RPM_BUILD_ROOT%{_infodir}/dir
+rm -f $RPM_BUILD_ROOT%{_bindir}/uncompress
 
 
 %check
