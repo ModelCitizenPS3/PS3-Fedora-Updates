@@ -1,0 +1,12 @@
+diff -uNr spu-tools-orig/src/Makefile spu-tools/src/Makefile
+--- spu-tools-orig/src/Makefile	2024-07-03 18:42:52.000000000 -0400
++++ spu-tools/src/Makefile	2024-07-03 18:43:51.000000000 -0400
+@@ -1,7 +1,4 @@
+-ARCHIV := spu-tools.tar.gz
+-
+-CC = gcc
+-CFLAGS = -g -Wall
++CFLAGS = -O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple -Wall
+ PREFIX = $(DESTDIR)/usr
+ 
+ objs = ctx-info.o spu-info.o proc-info.o general-info.o spu-top.o spu-ps.o

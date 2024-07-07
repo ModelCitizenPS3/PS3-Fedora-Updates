@@ -1,19 +1,21 @@
+%define  platform .PS3
+
+ExclusiveArch:  ppc ppc64
+Summary:        The zlib compression and decompression library
 Name:           zlib
 Version:        1.2.13
-Release:        1%{?dist}%{?platform}
-Summary:        The zlib compression and decompression library
+Release:        3%{?dist}%{platform}
 Group:          System Environment/Libraries
-Source0:        %{name}-%{version}.tar.gz
-URL:            https://www.%{name}.net/
-License:        %{name}
+License:        zlib
+URL:            http://www.%{name}.net/
+Source0:        http://www.%{name}.net/fossils/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  automake, autoconf, libtool
 Provides:       %{name} < %{version}
-ExclusiveArch:  ppc ppc64
 
 %description
-Zlib is a general-purpose, patent-free, lossless data compression library
-which is used by many different programs.
+Zlib is a general-purpose, patent-free, lossless data compression library which
+is used by many different programs.
 
 %package devel
 Summary:    Header files and libraries for Zlib development
@@ -38,7 +40,7 @@ that use the zlib compression and decompression library.
 Summary:    Minizip manipulates files from a .zip archive
 Group:      System Environment/Libraries
 Requires:   %{name} = %{version}-%{release}
-Provides:   minizip < %{version}
+Conflicts:  minizip < %{version}
 
 %description -n  minizip
 Minizip manipulates files from a .zip archive.
@@ -61,41 +63,40 @@ applications which use minizip.
 
 %build
 %ifarch ppc
-CC=%{__cc} CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple" ./configure --const --prefix=%{_prefix} --libdir=/%{_lib} --sharedlibdir=/%{_lib} --includedir=%{_includedir}
+CC="gcc -m32" CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple" ./configure --const --prefix=%{_prefix} --libdir=%{_libdir} --sharedlibdir=%{_libdir} --includedir=%{_includedir}
 %else
-CC=%{__cc} CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple" ./configure --const --64 --prefix=%{_prefix} --libdir=/%{_lib} --sharedlibdir=/%{_lib} --includedir=%{_includedir}
+CC="gcc -m64" CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple" ./configure --const --prefix=%{_prefix} --64 --libdir=%{_libdir} --sharedlibdir=%{_libdir} --includedir=%{_includedir}
 %endif
 make %{?_smp_mflags}
+pushd $PWD
 cd contrib/minizip
 autoreconf --install
-%configure CC=%{__cc} CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple"
+%configure
 make %{?_smp_mflags}
-cd ../../
+popd
 
 
 %check
-make check
+make %{?_smp_mflags} check
 
 
 %install
-rm -rf ${RPM_BUILD_ROOT}
+rm -rf $RPM_BUILD_ROOT
+pushd $PWD
 cd contrib/minizip
 make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
-cd ../../
+popd
 make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.la
-mv -f $RPM_BUILD_ROOT/%{_lib}/pkgconfig/%{name}.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/%{name}.pc
-rm -rf $RPM_BUILD_ROOT/%{_lib}/pkgconfig
-mv -f $RPM_BUILD_ROOT/%{_lib}/libz.a $RPM_BUILD_ROOT%{_libdir}/libz.a
-rm $RPM_BUILD_ROOT/%{_lib}/libz.so
-ln -s ../../%{_lib}/libz.1.2.13 $RPM_BUILD_ROOT%{_libdir}/libz.so
-ln -s ../../%{_lib}/libz.1.2.13 $RPM_BUILD_ROOT%{_libdir}/libz.so.1
-ln -s ../../%{_lib}/libz.1.2.13 $RPM_BUILD_ROOT%{_libdir}/libz.so.1.2.13
+mkdir $RPM_BUILD_ROOT/%{_lib}
+ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1
+ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.3
+ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.13
 
-    
+
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+rm -rf $RPM_BUILD_ROOT
 
 
 %post -p /sbin/ldconfig
@@ -110,27 +111,26 @@ rm -rf ${RPM_BUILD_ROOT}
 %files
 %defattr(-,root,root,-)
 %doc README ChangeLog FAQ
-/%{_lib}/libz.so.1
-/%{_lib}/libz.so.1.2.13
-%{_libdir}/libz.so.1
-%{_libdir}/libz.so.1.2.13
+/%{_lib}/libz.so.*
+%{_libdir}/libz.so.*
 
 %files devel
 %defattr(-,root,root,-)
+%doc README
 %{_libdir}/libz.so
 %{_includedir}/zconf.h
 %{_includedir}/zlib.h
-%{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/zlib.3*
+%{_libdir}/pkgconfig/%{name}.pc
 
 %files static
 %defattr(-,root,root,-)
+%doc README
 %{_libdir}/libz.a
 
 %files -n minizip
 %defattr(-,root,root,-)
-%{_libdir}/libminizip.so.1
-%{_libdir}/libminizip.so.1.0.0
+%{_libdir}/libminizip.so.*
 
 %files -n minizip-devel
 %defattr(-,root,root,-)
@@ -141,6 +141,12 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
-* Fri Jun 07 2024 Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
-- Initial build for PS3 Fedora on Cell/B.E (sackboy)
+* Wed Jul 3 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-3
+- Added missing question marks to _smp_mflags vars
+
+* Wed Jul 3 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-2
+- Added conflicts with minizip < 1.2.13
+
+* Tue Jul 2 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
+- Initial build for PS3 Fedora (Sackboy) www.ps3linux.net on Cell/B.E.
 
