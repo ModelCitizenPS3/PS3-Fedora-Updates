@@ -4,7 +4,7 @@ ExclusiveArch:  ppc ppc64
 Summary:        The zlib compression and decompression library
 Name:           zlib
 Version:        1.2.13
-Release:        3%{?dist}%{platform}
+Release:        1%{?dist}%{platform}
 Group:          System Environment/Libraries
 License:        zlib
 URL:            http://www.%{name}.net/
@@ -40,7 +40,6 @@ that use the zlib compression and decompression library.
 Summary:    Minizip manipulates files from a .zip archive
 Group:      System Environment/Libraries
 Requires:   %{name} = %{version}-%{release}
-Conflicts:  minizip < %{version}
 
 %description -n  minizip
 Minizip manipulates files from a .zip archive.
@@ -89,10 +88,21 @@ popd
 make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.la
-mkdir $RPM_BUILD_ROOT/%{_lib}
+mkdir -p $RPM_BUILD_ROOT/%{_lib}
 ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1
 ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.3
 ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.13
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
+cp -f ChangeLog $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}/ChangeLog
+cp -f FAQ $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}/FAQ
+cp -f README $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}/README
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-devel-%{version}
+cp -f README $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-devel-%{version}/README
+cp -f doc/algorithm.txt $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-devel-%{version}/algorithm.txt
+cp -f test/example.c $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-devel-%{version}/example.c
+cp -f test/minigzip.c $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-devel-%{version}/minigzip.c
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-static-%{version}
+cp -f README $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-static-%{version}/README
 
 
 %clean
@@ -110,43 +120,53 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README ChangeLog FAQ
-/%{_lib}/libz.so.*
-%{_libdir}/libz.so.*
+/%{_lib}/libz.so.1
+/%{_lib}/libz.so.1.2.3
+/%{_lib}/libz.so.1.2.13
+%{_libdir}/libz.so.1
+%{_libdir}/libz.so.1.2.13
+%dir %{_datadir}/doc/%{name}-%{version}
+%doc %{_datadir}/doc/%{name}-%{version}/ChangeLog
+%doc %{_datadir}/doc/%{name}-%{version}/FAQ
+%doc %{_datadir}/doc/%{name}-%{version}/README
 
 %files devel
 %defattr(-,root,root,-)
-%doc README
-%{_libdir}/libz.so
 %{_includedir}/zconf.h
 %{_includedir}/zlib.h
-%{_mandir}/man3/zlib.3*
+%{_libdir}/libz.so
+%dir %{_datadir}/doc/%{name}-devel-%{version}
+%doc %{_datadir}/doc/%{name}-devel-%{version}/README
+%doc %{_datadir}/doc/%{name}-devel-%{version}/algorithm.txt
+%doc %{_datadir}/doc/%{name}-devel-%{version}/example.c
+%doc %{_datadir}/doc/%{name}-devel-%{version}/minigzip.c
+%{_mandir}/man3/%{name}.3.gz
 %{_libdir}/pkgconfig/%{name}.pc
 
 %files static
 %defattr(-,root,root,-)
-%doc README
 %{_libdir}/libz.a
+%dir %{_datadir}/doc/%{name}-static-%{version}
+%doc %{_datadir}/doc/%{name}-static-%{version}/README
 
 %files -n minizip
 %defattr(-,root,root,-)
-%{_libdir}/libminizip.so.*
+%{_libdir}/libminizip.so.1
+%{_libdir}/libminizip.so.1.0.0
 
 %files -n minizip-devel
 %defattr(-,root,root,-)
 %dir %{_includedir}/minizip
-%{_includedir}/minizip/*.h
+%{_includedir}/minizip/crypt.h
+%{_includedir}/minizip/ioapi.h
+%{_includedir}/minizip/mztools.h
+%{_includedir}/minizip/zip.h
+%{_includedir}/minizip/unzip.h
 %{_libdir}/libminizip.so
 %{_libdir}/pkgconfig/minizip.pc
 
 
 %changelog
-* Wed Jul 3 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-3
-- Added missing question marks to _smp_mflags vars
-
-* Wed Jul 3 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-2
-- Added conflicts with minizip < 1.2.13
-
-* Tue Jul 2 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
+* Tue Jul 23 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
 - Initial build for PS3 Fedora (Sackboy) www.ps3linux.net on Cell/B.E.
 
