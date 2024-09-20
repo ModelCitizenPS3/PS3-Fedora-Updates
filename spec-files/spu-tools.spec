@@ -23,13 +23,8 @@ Playstation 3. Also IBM's QS20 and QS21 blade servers had Cell CPUs.
 
 
 %build
-%ifarch ppc
-export CC="gcc -m32"
-%else
-export CC="gcc -m64"
-%endif
 cd src
-make %{?_smp_mflags}
+CC="gcc -m32" make %{?_smp_mflags}
 
 
 %install
@@ -52,6 +47,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Jul 24 2024 The Model Citizen <model.citizen@ps3linux.net> - 2.3.0.136-1
-- Initial build for PS3 Fedora (Sackboy) on Cell/B.E. (www.ps3linux.net)
+* Thu Aug 1 2024 The Model Citizen <model.citizen@ps3linux.net> - 2.3.0.136-1
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 

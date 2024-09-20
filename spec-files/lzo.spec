@@ -114,6 +114,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jul 5 2024 The Model Citizen <model.citizen@ps3linux.net> - 2.10-1
-- Initial build for PS3 Fedora (Sackboy) on Cell/B.E. (www.ps3linux.net)
+* Thu Aug 1 2024 The Model Citizen <model.citizen@ps3linux.net> - 2.10-1
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 

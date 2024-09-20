@@ -10,6 +10,7 @@ License:        GPLv2,GPLv3,LGPLv2.1
 URL:            https://tukaani.org/%{name}/
 Source0:        https://tukaani.org/%{name}/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:  compat-gcc-34-g77
 Requires:       %{name}-libs = %{version}-%{release}
 
 %description
@@ -116,6 +117,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Jul 24 2024 The Model Citizen <model.citizen@ps3linux.net> - 4.32.7-4
-- Initial build for PS3 Fedora (Sackboy) on Cell/B.E. (www.ps3linux.net)
+* Wed Jul 31 2024 The Model Citizen <model.citizen@ps3linux.net> - 4.32.7-4
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 

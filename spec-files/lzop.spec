@@ -31,7 +31,7 @@ make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
 
 
 %clean
@@ -46,6 +46,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Jul 23 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.04-1
-- Initial build for PS3 Fedora (Sackboy) on Cell/B.E. (www.ps3linux.net)
+* Thu Aug 1 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.04-1
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 

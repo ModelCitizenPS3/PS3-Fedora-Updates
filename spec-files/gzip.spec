@@ -3,7 +3,7 @@
 ExclusiveArch:  ppc
 Name:           gzip
 Version:        1.3.13
-Release:        2%{?dist}%{platform}
+Release:        1%{?dist}%{platform}
 Summary:        The GNU data compression program
 Group:          Applications/File
 License:        GPLv2 and GFDL
@@ -97,9 +97,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Jul 25 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.3.13-2
-- Reconfigured to better replicate original gzip installation
-
-* Thu Jul 25 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.3.13-1
-- Initial build for PS3 Fedora (Sackboy) on Cell CPU (www.ps3linux.net)
+* Wed Jul 31 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.3.13-1
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 

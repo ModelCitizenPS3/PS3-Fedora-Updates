@@ -10,12 +10,21 @@ License:        zlib
 URL:            http://www.%{name}.net/
 Source0:        http://www.%{name}.net/fossils/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  automake, autoconf, libtool
+BuildRequires:  automake autoconf libtool
 Provides:       %{name} < %{version}
 
 %description
 Zlib is a general-purpose, patent-free, lossless data compression library which
 is used by many different programs.
+
+%package static
+Summary:    Static libraries for Zlib development
+Group:      Development/Libraries
+Requires:   %{name}-devel = %{version}-%{release}
+
+%description static
+The zlib-static package includes static libraries needed to develop programs
+that use the zlib compression and decompression library.
 
 %package devel
 Summary:    Header files and libraries for Zlib development
@@ -26,15 +35,6 @@ Requires:   pkgconfig
 %description devel
 The zlib-devel package contains the header files and libraries needed to
 develop programs that use the zlib compression and decompression library.
-
-%package static
-Summary:    Static libraries for Zlib development
-Group:      Development/Libraries
-Requires:   %{name}-devel = %{version}-%{release}
-
-%description static
-The zlib-static package includes static libraries needed to develop programs
-that use the zlib compression and decompression library.
 
 %package -n minizip
 Summary:    Minizip manipulates files from a .zip archive
@@ -89,9 +89,9 @@ make %{?_smp_mflags} install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/libminizip.la
 mkdir -p $RPM_BUILD_ROOT/%{_lib}
-ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1
-ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.3
-ln -s ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.13
+ln -sf ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1
+ln -sf ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.3
+ln -sf ..%{_libdir}/libz.so.1.2.13 $RPM_BUILD_ROOT/%{_lib}/libz.so.1.2.13
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
 cp -f ChangeLog $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}/ChangeLog
 cp -f FAQ $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}/FAQ
@@ -167,6 +167,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Jul 23 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
-- Initial build for PS3 Fedora (Sackboy) www.ps3linux.net on Cell/B.E.
+* Wed Jul 31 2024 The Model Citizen <model.citizen@ps3linux.net> - 1.2.13-1
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 

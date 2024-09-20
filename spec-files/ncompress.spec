@@ -26,11 +26,11 @@ compatible with the original UNIX compress utility.
 
 
 %build
-CC="gcc -m32" CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE" ENDIAN=1234 make
+CC="gcc -m32" CFLAGS="-O3 -mcpu=cell -mtune=cell -mno-string -mno-multiple -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE" ENDIAN=1234 make %{?_smp_mflags}
 
 
 %check
-make check
+make %{?_smp_mflags} check
 
 
 %install
@@ -57,6 +57,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Jul 27 2024 The Model Citizen <model.citizen@ps3linux.net> - 4.2.4.6-1
-- Initial build for PS3 Fedora (Sackboy) on Cell/B.E. (www.ps3linux.net)
+* Thu Aug 1 2024 The Model Citizen <model.citizen@ps3linux.net> - 4.2.4.6-1
+- Initial build for Playstation 3 Fedora (Sackboy) on Cell/B.E.
 
